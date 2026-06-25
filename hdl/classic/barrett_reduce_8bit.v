@@ -20,26 +20,26 @@ module barrett_reduce_8bit #(
   output wire [7:0] r
 );
 
-  function integer ceil_log2;
-    input integer x;
-    integer t;
-    begin
-      // x assumed > 1
-      t = 0;
-      x = x - 1;
-      while (x > 0) begin
-        t = t + 1;
-        x = x >> 1;
-      end
-      ceil_log2 = t;
-    end
-  endfunction
+  // function integer ceil_log2;
+  //   input integer x;
+  //   integer t;
+  //   begin
+  //     // x assumed > 1
+  //     t = 0;
+  //     x = x - 1;
+  //     while (x > 0) begin
+  //       t = t + 1;
+  //       x = x >> 1;
+  //     end
+  //     ceil_log2 = t;
+  //   end
+  // endfunction
 
 	reg [16-1:0] k, Mu, z, m1, m2, m3, t, res;
 
 	always @(posedge clock) begin 
 		// Pre computation phase
-		k = ceil_log2(q); 
+		k = 8; // # of bits in q
 		Mu = (1 << (2*k)) / q; // 2^2k / q I don't think floor matters
 
 		// Integer multiplication phase 
