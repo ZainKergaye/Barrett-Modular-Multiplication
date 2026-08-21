@@ -10,54 +10,21 @@
 //   m3 = floor(m2 / 2^k)
 //   t  = z - m3*q
 //   if t >= 2q return t-2q else if t>=q return t-q else t
+//   Have an understanding of how a circuit is structred rather than the math
+//   DOES NOT NEED A CLOCK
+//   PRECALC CONSTANT OUTSIDE OF FUNC. FEED INTO CIRCUIT DIRECTLY
+//   DO 1 - 2 algorithms
+//   DONT CARE ABOUT A AND B YET, TAKE Z AS INPUT
+//   MAKE Z A RANDOM NUMBER
 module barrett_reduce_8bit #(
-	parameter integer bits = 1
+	parameter integer WIDTH = 1
 )(
-	input  wire clock,
-  input  wire [7:0] a,
-  input  wire [7:0] b,
-	input  wire [7:0] q,
-  output wire [7:0] r
+	input  wire [WIDTH-1:0] z,
+	input  wire [WIDTH-1:0] q,
+	input  wire [WIDTH-1:0] k,
+	input  wire [WIDTH-1:0] u,
+  output wire [WIDTH-1:0] r
 );
-
-  function integer ceil_log2;
-    input integer x;
-    integer t;
-    begin
-      // x assumed > 1
-      t = 0;
-      x = x - 1;
-      while (x > 0) begin
-        t = t + 1;
-        x = x >> 1;
-      end
-      ceil_log2 = t;
-    end
-  endfunction
-
-	reg [16-1:0] k, Mu, z, m1, m2, m3, t, res;
-
-	always @(posedge clock) begin 
-		// Pre computation phase
-		k = ceil_log2(q); // # of bits in q
-		Mu = (1 << (2*k)) / q; // 2^2k / q I don't think floor matters
-
-		// Integer multiplication phase 
-		z = a * b;
-		
-		// Reduction steps 
-		m1 = z >> k;
-		m2 = m1 * Mu;
-		m3 = m2 >> k;
-		t = z - m3 * q;
-
-		// Overflow correctio4
-    if (t >= (2*q))      res = t - 2 * q;
-    else if (t >= q)     res = t - q;
-    else                 res = t;
-
-	end
-
-	assign r = res;
+assign r = q;
 endmodule
 
